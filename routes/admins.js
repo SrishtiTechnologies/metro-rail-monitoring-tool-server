@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import Admin from '../models/admin';
-import Employee from '../models/employee';
+import Admin from '../models/admin.js';
+import Employee from '../models/employee.js';
 
 const router = express.Router();
 

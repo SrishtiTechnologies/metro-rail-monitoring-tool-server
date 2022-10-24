@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import Metro from '../models/metro';
+import Metro from '../models/metro.js';
 
 const router = express.Router();
 

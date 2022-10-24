@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import Station from '../models/station';
+import Station from '../models/station.js';
 
 const router = express.Router();
 

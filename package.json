@@ -2,6 +2,7 @@
   "name": "metro-rail-monitoring-tool",
   "version": "1.0.0",
   "description": "Metro Rail Monitoring Tool Rest APIs using Node.js and express",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",

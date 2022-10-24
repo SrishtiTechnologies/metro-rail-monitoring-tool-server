@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import Card from '../models/card';
+import Card from '../models/card.js';
 
 const router = express.Router();
 
