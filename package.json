@@ -1,0 +1,24 @@
+{
+  "name": "metro-rail-monitoring-tool",
+  "version": "1.0.0",
+  "description": "Metro Rail Monitoring Tool Rest APIs using Node.js and express",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "author": "Kushal Gupta",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.6.7"
+  },
+  "engines": {
+    "node": "16.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
