@@ -78,6 +78,47 @@ router.get('/:cardNumber', (req, res) => {
     });
 });
 
+router.get('/:customerId', (req, res) => {
+    let customerId = req.params.customerId;
+    Card.find({ customerId: customerId }, (err, docs) => {
+        if (!err) {
+            let count = docs.length;
+            let message;
+            if (count > 0) {
+                if (count == 1) {
+                    message = count + " card was found.";
+                }
+                else {
+                    message = count + " cards were found.";
+                }
+                res.status(200).json({
+                    message: message,
+                    cards: docs.map(doc => {
+                        return {
+                            cardNumber: doc.cardNumber,
+                            cardType: doc.cardType,
+                            amount: doc.amount,
+                        }
+                    })
+                });
+            }
+            else {
+                res.status(201).json({
+                    message: "No cards were found.",
+                    error: "No cards are registered for this customer"
+                });
+            }
+        }
+        else {
+            console.log(err);
+            res.status(500).json({
+                message: "Cards could not be found",
+                error: err.message
+            });
+        }
+    });
+});
+
 router.post('/', (req, res) => {
     let cardNumber;
 

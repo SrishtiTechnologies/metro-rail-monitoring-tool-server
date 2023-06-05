@@ -2,14 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+
 import customerRoutes from './routes/customers.js';
 import cardRoutes from './routes/cards.js';
 import adminRoutes from './routes/admins.js';
+import trainRoutes from './routes/trains.js';
 import stationRoutes from './routes/stations.js';
-import metroRoutes from './routes/metros.js';
 import routeRoutes from './routes/routes.js';
 import queryRoutes from './routes/queries.js';
-import employeeRoutes from './routes/employees.js';
 
 const app = express();
 dotenv.config();
@@ -17,14 +17,13 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api/customers', customerRoutes);
-app.use('/api/admins', adminRoutes);
-app.use('/api/cards', cardRoutes);
-app.use('/api/stations', stationRoutes);
-app.use('/api/metros', metroRoutes);
-app.use('/api/routes', routeRoutes);
-app.use('/api/query', queryRoutes);
-app.use('/api/employees', employeeRoutes);
+app.use('/api/v1/customers', customerRoutes);
+app.use('/api/v1/admins', adminRoutes);
+app.use('/api/v1/cards', cardRoutes);
+app.use('/api/v1/trains', trainRoutes);
+app.use('/api/v1/stations', stationRoutes);
+app.use('/api/v1/routes', routeRoutes);
+app.use('/api/v1/queries', queryRoutes);
 
 app.get('/', (req, res) => {
   res.status(200).json({

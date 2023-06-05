@@ -84,8 +84,7 @@ router.get(':queryNumber', (req, res) => {
     });
 });
 
-router.post('/:type', (req, res) => {
-    let contactType = req.params.type;
+router.post('/', (req, res) => {
     let queryNumber;
 
     Query.findOne().sort({ _id: -1 }).exec().then(doc => {
@@ -101,7 +100,7 @@ router.post('/:type', (req, res) => {
             _id: new mongoose.Types.ObjectId(),
             queryNumber: queryNumber,
             customerName: req.body.customerName,
-            contactType: contactType,
+            contactType: req.body.contactType,
             emailId: req.body.emailId,
             phone: req.body.phone,
             status: "New",

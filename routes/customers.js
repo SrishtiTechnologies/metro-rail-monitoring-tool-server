@@ -1,7 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import Customer from '../models/customer.js';
-import Card from '../models/card.js';
 
 const router = express.Router();
 
@@ -47,22 +46,10 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
-    let id = req.params.id;
-    let searchObject = {};
+router.get('/:customerId', (req, res) => {
+    let customerId = req.params.customerId;
 
-    if (!isNaN(id)) {
-        searchObject = {
-            customerId: id
-        }
-    }
-    else {
-        searchObject = {
-            emailId: id
-        }
-    }
-
-    Customer.findOne(searchObject, (err, doc) => {
+    Customer.findOne({ customerId: customerId }, (err, doc) => {
         if (!err) {
             if (doc != null) {
                 res.status(200).json({
@@ -93,49 +80,8 @@ router.get('/:id', (req, res) => {
     });
 });
 
-router.get('/cards/:customerId', (req, res) => {
-    let customerId = req.params.customerId;
-    Card.find({ customerId: customerId }, (err, docs) => {
-        if (!err) {
-            let count = docs.length;
-            let message;
-            if (count > 0) {
-                if (count == 1) {
-                    message = count + " card was found.";
-                }
-                else {
-                    message = count + " cards were found.";
-                }
-                res.status(200).json({
-                    message: message,
-                    cards: docs.map(doc => {
-                        return {
-                            cardNumber: doc.cardNumber,
-                            cardType: doc.cardType,
-                            amount: doc.amount,
-                        }
-                    })
-                });
-            }
-            else {
-                res.status(201).json({
-                    message: "No cards were found.",
-                    error: "No cards are registered for this customer"
-                });
-            }
-        }
-        else {
-            console.log(err);
-            res.status(500).json({
-                message: "Cards could not be found",
-                error: err.message
-            });
-        }
-    });
-});
-
 router.post('/', (req, res) => {
-    let customer_Id;
+    let customerId;
     let emailId = req.body.emailId;
 
     Customer.findOne({ emailId: emailId }, (err, doc) => {
@@ -143,15 +89,15 @@ router.post('/', (req, res) => {
             if (!doc) {
                 Customer.findOne().sort({ _id: -1 }).exec().then(doc => {
                     if (!doc) {
-                        customer_Id = 10001;
+                        customerId = 10001;
                     }
                     else {
-                        customer_Id = doc.customerId + 1;
+                        customerId = doc.customerId + 1;
                     }
 
                     let customer = new Customer({
                         _id: new mongoose.Types.ObjectId(),
-                        customerId: customer_Id,
+                        customerId: customerId,
                         name: req.body.name,
                         emailId: emailId,
                         password: req.body.password,
@@ -195,24 +141,11 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/:id', (req, res) => {
-    let id = req.params.id;
-    let searchObject = {};
-
-    if (!isNaN(id)) {
-        searchObject = {
-            customerId: id
-        }
-    }
-    else {
-        searchObject = {
-            emailId: id
-        }
-    }
-
+router.put('/:customerId', (req, res) => {
+    let customerId = req.params.customerId;
     let new_details = req.body;
 
-    Customer.findOneAndUpdate(searchObject, new_details, { new: true, useFindAndModify: true }).exec().then(doc => {
+    Customer.findOneAndUpdate({ customerId: customerId }, new_details, { new: true, useFindAndModify: true }).exec().then(doc => {
         res.status(200).json({
             message: "Updated customer details successfully."
         });
@@ -225,10 +158,10 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:custId', (req, res) => {
-    let custId = req.params.custId;
+router.delete('/:customerId', (req, res) => {
+    let customerId = req.params.customerId;
 
-    Customer.findOneAndDelete({ customerId: custId }).exec().then(doc => {
+    Customer.findOneAndDelete({ customerId: customerId }).exec().then(doc => {
         res.status(200).json({
             message: "Deleted customer successfully.",
             customerId: doc.customerId,

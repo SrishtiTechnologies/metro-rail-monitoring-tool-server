@@ -49,22 +49,10 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
-    let id = req.params.id;
-    let searchObject = {};
+router.get('/:adminId', (req, res) => {
+    let adminId = req.params.adminId;
 
-    if (!isNaN(id)) {
-        searchObject = {
-            adminId: id
-        }
-    }
-    else {
-        searchObject = {
-            emailId: id
-        }
-    }
-
-    Admin.findOne(searchObject, (err, doc) => {
+    Admin.findOne({ adminId: adminId }, (err, doc) => {
         if (!err) {
             if (doc != null) {
                 res.status(200).json({
@@ -98,66 +86,55 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    let employeeId = req.body.employeeId, emailId = req.body.emailId;
+    let adminId;
+    let emailId = req.body.emailId;
 
-    Employee.findOne({ employeeId: employeeId }, (err, doc) => {
+    Admin.findOne({ emailId: emailId }, (err, doc) => {
         if (!err) {
-            if (doc) {
-                Admin.findOne({ $or: [{ adminId: employeeId }, { emailId: emailId }] }, (err, doc) => {
-                    if (!err) {
-                        if (!doc) {
-                            Admin.findOne().sort({ _id: -1 }).exec().then(doc => {
-                                let admin = new Admin({
-                                    _id: new mongoose.Types.ObjectId(),
-                                    adminId: employeeId,
-                                    name: req.body.name,
-                                    emailId: req.body.emailId,
-                                    password: req.body.password,
-                                    phone: req.body.phone,
-                                    dob: req.body.dob,
-                                    address: req.body.address
-                                });
-
-                                admin.save().then(doc => {
-                                    res.status(200).json({
-                                        message: "Admin created successfully.",
-                                        adminId: doc.adminId
-                                    });
-                                }).catch(err => {
-                                    console.log(err);
-                                    res.status(500).json({
-                                        message: "Admin could not be created",
-                                        error: err.message
-                                    });
-                                });
-                            }).catch(err => {
-                                console.log(err);
-                                res.status(500).json({
-                                    message: "Admin could not be created",
-                                    error: err.message
-                                });
-                            });
-                        }
-                        else {
-                            res.status(201).json({
-                                message: "Admin could not be created",
-                                error: "Admin is already registered with this employee id/email."
-                            });
-                        }
+            if (!doc) {
+                Admin.findOne().sort({ _id: -1 }).exec().then(doc => {
+                    if (!doc) {
+                        adminId = 2001;
                     }
                     else {
+                        adminId = doc.adminId + 1;
+                    }
+
+                    let admin = new Admin({
+                        _id: new mongoose.Types.ObjectId(),
+                        adminId: adminId,
+                        name: req.body.name,
+                        emailId: emailId,
+                        password: req.body.password,
+                        phone: req.body.phone,
+                        dob: req.body.dob,
+                        address: req.body.address
+                    });
+
+                    admin.save().then(doc => {
+                        res.status(200).json({
+                            message: "Admin created successfully.",
+                            adminId: doc.adminId
+                        });
+                    }).catch(err => {
                         console.log(err);
                         res.status(500).json({
                             message: "Admin could not be created",
                             error: err.message
                         });
-                    }
+                    });
+                }).catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        message: "Admin could not be created",
+                        error: err.message
+                    });
                 });
             }
             else {
                 res.status(201).json({
                     message: "Admin could not be created",
-                    error: "Employee id is not valid."
+                    error: "Admin is already registered with this adminId"
                 });
             }
         }
